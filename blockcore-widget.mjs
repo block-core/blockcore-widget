@@ -1,180 +1,352 @@
 class BlockcoreWidget extends HTMLElement {
     constructor() {
-        super();
-        // this.innerHTML = '123';
-        // this.innerText = "gdfdh ";
-
-        // Setup a click listener on <app-drawer> itself.
-        this.addEventListener("click", (e) => {
-            // Don't toggle the drawer if it's disabled.
-            if (this.disabled) {
-                return;
-            }
-            this.openPayment();
+      super();
+      // this.addEventListener("click", (e) => {
+      //   // Don't toggle the drawer if it's disabled.
+      //   if (this.disabled) {
+      //     return;
+      //   }
+      //   this.openPayment();
+      // });
+    }
+  
+    async request(args) {
+      const blockcore = globalThis.blockcore;
+  
+      if (!blockcore) {
+        throw Error(
+          "The Blockcore provider is not available. Unable to continue."
+        );
+      }
+  
+      let result;
+  
+      try {
+        result = await blockcore.request(args);
+      } catch (err) {
+        console.error(err);
+        result = "Error: " + err.message;
+      }
+  
+      return result;
+    }
+  
+    async openPayment() {
+      try {
+        var result = await this.request({
+          method: "payment",
+          params: [
+            {
+              network: this.network,
+              amount: this.amount,
+              address: this.address,
+              label: this.label,
+              message: this.message,
+              data: this.data,
+              id: this.id,
+            },
+          ],
         });
+  
+        console.log("Result:", result);
+      } catch (err) {
+        console.error(err);
+      }
     }
-
-    openPayment() {
-        console.log("OPEN PAYMENT:", this.getAttribute("chain"));
+  
+    #networkElement;
+    #styleElement;
+    #labelElement;
+    #messageElement;
+    #dataElement;
+    #addressElement;
+    #idElement;
+    #amountElement;
+    #payButtonElement;
+    #paymentLink;
+  
+    render() {
+      console.log("render");
+  
+      if (!this.#styleElement) {
+        this.#styleElement = document.createElement("style");
+  
+        this.#styleElement.innerHTML = `.blockcore-widget-pay-button {
+              padding: 2rem;
+              margin-bottom: 0.4em; 
+              margin-top: 0.4em; 
+              font-size: 1.2em; 
+              border-radius: 5px; 
+              border: 0; 
+              padding: 1em; 
+              background-color:  ${this.color};
+              cursor: pointer;
+           }
+  
+           .blockcore-widget-pay-button:hover {
+              opacity: 0.8;
+           }
+           
+           .blockcore-widget-label {
+              font-size: 1.4em;
+           }
+           
+           .blockcore-widget-amount {
+              font-size: 2em;
+              margin-top: 0.4em;
+              margin-bottom: 0.4em;
+           }`;
+  
+        this.appendChild(this.#styleElement);
+      }
+  
+      if (!this.#labelElement) {
+        this.#labelElement = document.createElement("div");
+        this.#labelElement.className = "blockcore-widget-label";
+        this.appendChild(this.#labelElement);
+      }
+  
+      this.#labelElement.innerHTML = `<strong>${this.label}</strong>`;
+  
+      if (!this.#messageElement) {
+        this.#messageElement = document.createElement("div");
+        this.appendChild(this.#messageElement);
+      }
+  
+      this.#messageElement.innerHTML = `<p>${this.message}</p>`;
+  
+      if (!this.#networkElement) {
+        this.#networkElement = document.createElement("div");
+        this.appendChild(this.#networkElement);
+      }
+  
+      this.#networkElement.innerHTML = `Network: ${this.network}`;
+  
+      if (!this.#addressElement) {
+        this.#addressElement = document.createElement("div");
+        this.appendChild(this.#addressElement);
+      }
+  
+      this.#addressElement.innerHTML = `Receiver: ${this.address}`;
+  
+      if (!this.#idElement) {
+        this.#idElement = document.createElement("div");
+        this.appendChild(this.#idElement);
+      }
+  
+      this.#idElement.innerHTML = `Reference number: #${this.id}`;
+  
+      if (!this.#dataElement) {
+        this.#dataElement = document.createElement("div");
+        this.appendChild(this.#dataElement);
+      }
+  
+      this.#dataElement.innerText = `Data (blockchain): ${this.data}`;
+  
+      if (!this.#amountElement) {
+        this.#amountElement = document.createElement("div");
+        this.#amountElement.className = "blockcore-widget-amount";
+        this.appendChild(this.#amountElement);
+      }
+  
+      if (!this.#amountElement) {
+        this.#amountElement = document.createElement("div");
+        this.appendChild(this.#amountElement);
+      }
+  
+      this.#amountElement.innerText = `Amount: ${this.amount}`;
+  
+      if (!this.#payButtonElement) {
+        this.#payButtonElement = document.createElement("button");
+        this.#payButtonElement.type = "button";
+        this.#payButtonElement.innerText = "Pay now";
+        this.#payButtonElement.className = "blockcore-widget-pay-button";
+        this.appendChild(this.#payButtonElement);
+      }
+  
+      // this.#payButtonElement.style.cssText = ``;
+  
+      if (!this.#paymentLink) {
+        this.#paymentLink = document.createElement("div");
+        this.#paymentLink.innerHTML =
+          'Payment securely processed using <a href="https://www.blockcore.net/wallet" target="_blank">Blockcore Wallet extension</a>.';
+        this.appendChild(this.#paymentLink);
+      }
     }
-
-    render () {
-        
-    }
-
+  
     static get observedAttributes() {
-        return ["disabled", "chain", "network", "amount", "address", "message", "data", "id", "readonly"];
+      return [
+        "disabled",
+        "network",
+        "amount",
+        "address",
+        "message",
+        "data",
+        "id",
+        "readonly",
+        "color",
+      ];
     }
-
+  
     get disabled() {
-        return this.hasAttribute("disabled");
+      return this.hasAttribute("disabled");
     }
-
+  
     set disabled(val) {
-        if (val) {
-            this.setAttribute("disabled", "");
-        } else {
-            this.removeAttribute("disabled");
-        }
+      if (val) {
+        this.setAttribute("disabled", "");
+      } else {
+        this.removeAttribute("disabled");
+      }
     }
-
-    get chain() {
-        return this.getAttribute("chain");
+  
+    get color() {
+      return this.getAttribute("color");
     }
-
-    set chain(val) {
-        console.log("CHAIN VAL:", val);
-        if (val) {
-            this.setAttribute("chain", val);
-        } else {
-            this.removeAttribute("chain");
-        }
+  
+    set color(val) {
+      if (val) {
+        this.setAttribute("color", val);
+      } else {
+        this.removeAttribute("color");
+      }
     }
-
+  
     get network() {
-        return this.getAttribute("network");
+      return this.getAttribute("network");
     }
-
+  
     set network(val) {
-        if (val) {
-            this.setAttribute("network", val);
-        } else {
-            this.removeAttribute("network");
-        }
+      if (val) {
+        this.setAttribute("network", val);
+      } else {
+        this.removeAttribute("network");
+      }
     }
-
+  
     get amount() {
-        return this.getAttribute("amount");
+      return this.getAttribute("amount");
     }
-
+  
     set amount(val) {
-        if (val) {
-            this.setAttribute("amount", val);
-        } else {
-            this.removeAttribute("amount");
-        }
+      if (val) {
+        this.setAttribute("amount", val);
+      } else {
+        this.removeAttribute("amount");
+      }
     }
-
+  
     get address() {
-        return this.getAttribute("address");
+      return this.getAttribute("address");
     }
-
+  
     set address(val) {
-
-        if (val) {
-            this.setAttribute("address", val);
-        } else {
-            this.removeAttribute("address");
-        }
+      if (val) {
+        this.setAttribute("address", val);
+      } else {
+        this.removeAttribute("address");
+      }
     }
-
+  
     get message() {
-        return this.getAttribute("message");
+      return this.getAttribute("message");
     }
-
+  
     set message(val) {
-        if (val) {
-            this.setAttribute("message", val);
-        } else {
-            this.removeAttribute("message");
-        }
+      if (val) {
+        this.setAttribute("message", val);
+      } else {
+        this.removeAttribute("message");
+      }
     }
-
+  
+    get label() {
+      return this.getAttribute("label");
+    }
+  
+    set label(val) {
+      if (val) {
+        this.setAttribute("label", val);
+      } else {
+        this.removeAttribute("label");
+      }
+    }
+  
     get data() {
-        return this.getAttribute("data");
+      return this.getAttribute("data");
     }
-
+  
     set data(val) {
-        if (val) {
-            this.setAttribute("data", val);
-        } else {
-            this.removeAttribute("data");
-        }
+      if (val) {
+        this.setAttribute("data", val);
+      } else {
+        this.removeAttribute("data");
+      }
     }
-
+  
     get id() {
-        return this.getAttribute("id");
+      return this.getAttribute("id");
     }
-
+  
     set id(val) {
-        if (val) {
-            this.setAttribute("id", val);
-        } else {
-            this.removeAttribute("id");
-        }
+      if (val) {
+        this.setAttribute("id", val);
+      } else {
+        this.removeAttribute("id");
+      }
     }
-
+  
     get readonly() {
-        return this.hasAttribute("disabled");
+      return this.hasAttribute("disabled");
     }
-
+  
     set readonly(val) {
-        if (val) {
-            this.setAttribute("disabled", "");
-        } else {
-            this.removeAttribute("disabled");
-        }
+      if (val) {
+        this.setAttribute("disabled", "");
+      } else {
+        this.removeAttribute("disabled");
+      }
     }
-
-
+  
     connectedCallback() {
-        // ...
-        console.log("connectedCallback");
-        this.innerHTML = "<div>Indian Wedding</div>"
+      // ...
+      console.log("connectedCallback");
+      this.render();
     }
-
+  
     disconnectedCallback() {
-        // ...
-        console.log("disconnectedCallback");
+      // ...
+      console.log("disconnectedCallback");
     }
-
+  
     attributeChangedCallback(attrName, oldVal, newVal) {
-        // ...
-        console.log("attributeChangedCallback");
-
-        // When the drawer is disabled, update keyboard/screen reader behavior.
-        if (this.disabled) {
-            this.setAttribute("tabindex", "-1");
-            this.setAttribute("aria-disabled", "true");
-        } else {
-            this.setAttribute("tabindex", "0");
-            this.setAttribute("aria-disabled", "false");
-        }
-
-        console.log("attrName:", attrName);
-        console.log(oldVal);
-        console.log(newVal);
-
-        if (this.chain) {
-            console.log("The selected widget chain is: ", this.chain);
-        }
-
-        // TODO: also react to the open attribute changing.
+      // ...
+      console.log("attributeChangedCallback");
+  
+      // When the drawer is disabled, update keyboard/screen reader behavior.
+      if (this.disabled) {
+        this.setAttribute("tabindex", "-1");
+        this.setAttribute("aria-disabled", "true");
+      } else {
+        this.setAttribute("tabindex", "0");
+        this.setAttribute("aria-disabled", "false");
+      }
+  
+      console.log("attrName:", attrName);
+      console.log(oldVal);
+      console.log(newVal);
+  
+      if (this.chain) {
+        console.log("The selected widget chain is: ", this.chain);
+      }
+  
+      this.render();
     }
-}
-
-customElements.define("blockcore-widget", BlockcoreWidget);
-
-customElements.whenDefined("blockcore-widget").then(() => {
+  }
+  
+  customElements.define("blockcore-widget", BlockcoreWidget);
+  
+  customElements.whenDefined("blockcore-widget").then(() => {
     console.log("blockcore-widget defined");
-});
+  });
+  

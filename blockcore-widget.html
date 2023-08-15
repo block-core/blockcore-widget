@@ -1,20 +1,34 @@
 <html>
-
-<head>
+  <head>
     <title>Blockcore Widget</title>
-    <script src="blockcore-widget.mjs" ></script>
+    <script src="blockcore-widget.mjs"></script>
     <style>
-        blockcore-widget {
-            width: 320px;
-            height: 240px;
-            border: 1px solid rgb(76, 58, 117);
-            display: inline-block;
-        }
+      body {
+        background-color: silver;
+        color: rgb(32, 32, 32);
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      blockcore-widget {
+        background-color: white;
+        display: inline-block;
+        border-radius: 5px;
+        padding: 1em;
+      }
     </style>
-</head>
+  </head>
 
-<body>
-    <blockcore-widget network="CITY" amount="10.5" address="Ccoquhaae7u6ASqQ5BiYueASz8EavUXrKn" message="Invoice Number 5" data="MzExMzUzNDIzNDY" id="4324" readonly></blockcore-widget>
-</body>
-
+  <body>
+    <blockcore-widget
+      color="#DFAB3C"
+      network="CITY"
+      amount="10.5"
+      address="Ccoquhaae7u6ASqQ5BiYueASz8EavUXrKn"
+      message="Invoice Number 5"
+      label="Your Royal Highness"
+      data="MzExMzUzNDIzNDY"
+      id="4324"
+      readonly
+    ></blockcore-widget>
+  </body>
 </html>
