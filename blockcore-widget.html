@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Blockcore Widget</title>
+    <title>Payment</title>
     <script src="blockcore-widget.mjs"></script>
     <style>
       body {
@@ -19,16 +19,23 @@
   </head>
 
   <body>
-    <blockcore-widget
-      color="#DFAB3C"
-      network="CITY"
-      amount="10.5"
-      address="Ccoquhaae7u6ASqQ5BiYueASz8EavUXrKn"
-      message="Invoice Number 5"
-      label="Your Royal Highness"
-      data="MzExMzUzNDIzNDY"
-      id="4324"
-      readonly
-    ></blockcore-widget>
+    <blockcore-widget></blockcore-widget>
+
+    <script>
+      const widget = document.querySelector("blockcore-widget");
+
+      if (widget) {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        widget.amount = urlParams.get("amount") ?? " ";
+        widget.color = urlParams.get("color") ?? " ";
+        widget.network = urlParams.get("network") ?? " ";
+        widget.address = urlParams.get("address") ?? " ";
+        widget.message = urlParams.get("message") ?? " ";
+        widget.label = urlParams.get("label") ?? " ";
+        widget.data = urlParams.get("data") ?? " ";
+        widget.id = urlParams.get("id") ?? " ";
+      }
+    </script>
   </body>
 </html>

@@ -61,35 +61,41 @@ class BlockcoreWidget extends HTMLElement {
   render() {
     if (!this.#styleElement) {
       this.#styleElement = document.createElement("style");
-
-      this.#styleElement.innerHTML = `.blockcore-widget-pay-button {
-              padding: 2rem;
-              margin-bottom: 0.4em; 
-              margin-top: 0.4em; 
-              font-size: 1.2em; 
-              border-radius: 5px; 
-              border: 0; 
-              padding: 1em; 
-              background-color:  ${this.color};
-              cursor: pointer;
-           }
-  
-           .blockcore-widget-pay-button:hover {
-              opacity: 0.8;
-           }
-           
-           .blockcore-widget-label {
-              font-size: 1.4em;
-           }
-           
-           .blockcore-widget-amount {
-              font-size: 2em;
-              margin-top: 0.4em;
-              margin-bottom: 0.4em;
-           }`;
-
       this.appendChild(this.#styleElement);
     }
+
+    this.#styleElement.innerHTML = `.blockcore-widget-pay-button {
+      padding: 2rem;
+      margin-bottom: 0.4em; 
+      margin-top: 0.4em; 
+      font-size: 1.2em; 
+      border-radius: 5px; 
+      border: 0; 
+      padding: 1em; 
+      background-color:  ${this.color};
+      cursor: pointer;
+   }
+
+   .blockcore-widget-pay-button:hover {
+      opacity: 0.8;
+   }
+   
+   .blockcore-widget-label {
+      font-size: 1.4em;
+      font-weight: 700;
+   }
+
+   .blockcore-widget-message {
+    margin-top: 0.6em;
+    margin-bottom: 0.6em;
+    }
+   
+   .blockcore-widget-amount {
+      font-size: 1.6em;
+      font-weight: 700;
+      margin-top: 0.4em;
+      margin-bottom: 0.4em;
+   }`;
 
     if (!this.#labelElement) {
       this.#labelElement = document.createElement("div");
@@ -97,35 +103,36 @@ class BlockcoreWidget extends HTMLElement {
       this.appendChild(this.#labelElement);
     }
 
-    this.#labelElement.innerHTML = `<strong>${this.label}</strong>`;
+    this.#labelElement.innerText = this.label;
 
     if (!this.#messageElement) {
       this.#messageElement = document.createElement("div");
+      this.#messageElement.className = "blockcore-widget-message";
       this.appendChild(this.#messageElement);
     }
 
-    this.#messageElement.innerHTML = `<p>${this.message}</p>`;
+    this.#messageElement.innerText = this.message;
 
     if (!this.#networkElement) {
       this.#networkElement = document.createElement("div");
       this.appendChild(this.#networkElement);
     }
 
-    this.#networkElement.innerHTML = `Network: ${this.network}`;
+    this.#networkElement.innerText = `Network: ${this.network}`;
 
     if (!this.#addressElement) {
       this.#addressElement = document.createElement("div");
       this.appendChild(this.#addressElement);
     }
 
-    this.#addressElement.innerHTML = `Receiver: ${this.address}`;
+    this.#addressElement.innerText = `Receiver: ${this.address}`;
 
     if (!this.#idElement) {
       this.#idElement = document.createElement("div");
       this.appendChild(this.#idElement);
     }
 
-    this.#idElement.innerHTML = `Reference number: #${this.id}`;
+    this.#idElement.innerText = `Reference number: #${this.id}`;
 
     if (!this.#dataElement) {
       this.#dataElement = document.createElement("div");
