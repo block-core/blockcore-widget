@@ -1,8 +1,15 @@
 <html>
   <head>
     <title>Payment</title>
-    <script src="blockcore-widget.mjs"></script>
+    <script type="module" src="blockcore-widget.mjs"></script>
     <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
         background-color: silver;
         color: rgb(32, 32, 32);
@@ -15,11 +22,21 @@
         border-radius: 5px;
         padding: 1em;
       }
+
+      .widget-container {
+        display: grid;
+        place-items: center; /* Shortcut for two below */
+        /* align-items: center;
+        justify-content: center; */
+        height: 100%;
+      }
     </style>
   </head>
 
   <body>
-    <blockcore-widget></blockcore-widget>
+    <div class="widget-container">
+      <blockcore-widget></blockcore-widget>
+    </div>
 
     <script>
       const widget = document.querySelector("blockcore-widget");
