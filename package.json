@@ -1,6 +1,6 @@
 {
   "name": "@blockcore/widget",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Web Widget for Blockcore",
   "type": "module",
   "exports": "./blockcore-widget.mjs",

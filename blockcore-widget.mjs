@@ -10,14 +10,14 @@ styles.replaceSync(`
     --default-depth: 15px;
 
     display: inline-block;
-    padding: 2em 1.5em;
+    padding: 2em 1.5em 1.2em 1.5em;
     contain: content;
     color: var(--foreground, var(--default-foreground));
     background: var(--background, var(--default-background));
     border-radius: var(--radius, var(--default-radius));
 
-    min-width: 325px;
     box-shadow: 0 0 var(--depth, var(--default-depth)) rgba(0,0,0,.5);
+    margin: 1em;
   }
 
   .blockcore-widget-amount {
@@ -25,13 +25,13 @@ styles.replaceSync(`
   }
 
   .blockcore-widget-pay-button {
-      padding: 2rem;
       margin-bottom: 0.4em;
       margin-top: 0.4em;
       font-size: 1.2em;
       border-radius: 5px;
       border: 0;
       padding: 1em;
+      margin-bottom: 1em;
       background-color: var(--accent, var(--default-accent));
       width: 100%;
       cursor: pointer;
@@ -62,6 +62,10 @@ styles.replaceSync(`
     margin-top: 1em;
   }
 
+  .blockcore-widget-network {
+    margin-top: 1em;
+  }
+
   .blockcore-widget-data {
     margin-bottom: 1em;
   }
@@ -73,6 +77,7 @@ styles.replaceSync(`
   .blockcore-widget-footer {
     font-size: 0.8em;
     opacity: 0.8;
+    text-align: center;
   }
 
 `);
@@ -165,6 +170,7 @@ class BlockcoreWidget extends HTMLElement {
 
     if (!this.#networkElement) {
       this.#networkElement = document.createElement("div");
+      this.#networkElement.className = "blockcore-widget-network";
       this.shadowRoot.appendChild(this.#networkElement);
     }
 
@@ -172,6 +178,7 @@ class BlockcoreWidget extends HTMLElement {
 
     if (!this.#addressElement) {
       this.#addressElement = document.createElement("div");
+      this.#addressElement.className = "blockcore-widget-address";
       this.shadowRoot.appendChild(this.#addressElement);
 
       this.#addressElement.innerText = "Address:";
