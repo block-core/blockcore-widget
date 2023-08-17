@@ -1,31 +1,16 @@
-// const render = (x) => `
-//   <div part="header" class="header">
-//     <h3 part="greeting">${x.network.toUpperCase()}</h3>
-//     <h4 part="message">my name is</h4>
-//   </div>
-
-//   <div>
-//     Network: <span id="network"></span>
-//   </div>
-
-//   <div part="body" class="body">
-//     <slot></slot>
-//   </div>
-
-//   <div part="footer" class="footer"></div>
-// `;
-
 const styles = new CSSStyleSheet();
 
 styles.replaceSync(`
   :host {
     --default-foreground: black;
     --default-background: white;
+    --default-accent: #DFAB3C;
+
     --default-radius: 20px;
     --default-depth: 15px;
 
     display: inline-block;
-    padding: 1em;
+    padding: 2em 1.5em;
     contain: content;
     color: var(--foreground, var(--default-foreground));
     background: var(--background, var(--default-background));
@@ -39,6 +24,56 @@ styles.replaceSync(`
     color: var(--foreground, var(--default-color));;
   }
 
+  .blockcore-widget-pay-button {
+      padding: 2rem;
+      margin-bottom: 0.4em;
+      margin-top: 0.4em;
+      font-size: 1.2em;
+      border-radius: 5px;
+      border: 0;
+      padding: 1em;
+      background-color: var(--accent, var(--default-accent));
+      width: 100%;
+      cursor: pointer;
+    }
+
+  .blockcore-widget-pay-button:hover {
+    opacity: 0.8;
+  }
+
+  .blockcore-widget-label {
+    font-size: 1.4em;
+    font-weight: 700;
+  }
+
+  .blockcore-widget-message {
+  margin-top: 0.6em;
+  margin-bottom: 0.6em;
+  }
+
+  .blockcore-widget-amount {
+    font-size: 1.6em;
+    font-weight: 700;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+  }
+
+  .blockcore-widget-id {
+    margin-top: 1em;
+  }
+
+  .blockcore-widget-data {
+    margin-bottom: 1em;
+  }
+
+  .blockcore-widget-data {
+    margin-bottom: 1em;
+  }
+
+  .blockcore-widget-footer {
+    font-size: 0.8em;
+    opacity: 0.8;
+  }
 
 `);
 
@@ -88,7 +123,7 @@ class BlockcoreWidget extends HTMLElement {
             label: this.label,
             message: this.message,
             data: this.data,
-            id: this.id,
+            id: this.reference,
           },
         ],
       });
@@ -105,7 +140,8 @@ class BlockcoreWidget extends HTMLElement {
   #messageElement;
   #dataElement;
   #addressElement;
-  #idElement;
+  #addressElementLink;
+  #referenceElement;
   #amountElement;
   #payButtonElement;
   #paymentLink;
@@ -137,32 +173,41 @@ class BlockcoreWidget extends HTMLElement {
     if (!this.#addressElement) {
       this.#addressElement = document.createElement("div");
       this.shadowRoot.appendChild(this.#addressElement);
+
+      this.#addressElement.innerText = "Address:";
+
+      this.#addressElementLink = document.createElement("a");
+      this.#addressElementLink.setAttribute("target", "_blank");
+      this.#addressElement.appendChild(this.#addressElementLink);
     }
 
-    this.#addressElement.innerText = `Receiver: ${this.address}`;
+    this.#addressElementLink.setAttribute(
+      "href",
+      `https://explorer.blockcore.net/${this.network}/explorer/address/${this.address}`
+    );
 
-    if (!this.#idElement) {
-      this.#idElement = document.createElement("div");
-      this.shadowRoot.appendChild(this.#idElement);
+    this.#addressElementLink.innerText = this.address;
+    // this.#addressElement.innerText = `Receiver: ${this.address}`;
+
+    if (!this.#referenceElement) {
+      this.#referenceElement = document.createElement("div");
+      this.#referenceElement.className = "blockcore-widget-id";
+      this.shadowRoot.appendChild(this.#referenceElement);
     }
 
-    this.#idElement.innerText = `Reference number: #${this.id}`;
+    this.#referenceElement.innerText = `ID: #${this.reference}`;
 
     if (!this.#dataElement) {
       this.#dataElement = document.createElement("div");
+      this.#dataElement.className = "blockcore-widget-data";
       this.shadowRoot.appendChild(this.#dataElement);
     }
 
-    this.#dataElement.innerText = `Data (blockchain): ${this.data}`;
+    this.#dataElement.innerText = `Data: ${this.data}`;
 
     if (!this.#amountElement) {
       this.#amountElement = document.createElement("div");
       this.#amountElement.className = "blockcore-widget-amount";
-      this.shadowRoot.appendChild(this.#amountElement);
-    }
-
-    if (!this.#amountElement) {
-      this.#amountElement = document.createElement("div");
       this.shadowRoot.appendChild(this.#amountElement);
     }
 
@@ -187,6 +232,7 @@ class BlockcoreWidget extends HTMLElement {
 
     if (!this.#paymentLink) {
       this.#paymentLink = document.createElement("div");
+      this.#paymentLink.className = "blockcore-widget-footer";
       this.#paymentLink.innerHTML =
         'Payment securely processed using <a href="https://www.blockcore.net/wallet" target="_blank">Blockcore Wallet extension</a>.';
       this.shadowRoot.appendChild(this.#paymentLink);
@@ -343,7 +389,6 @@ class BlockcoreWidget extends HTMLElement {
       this.setAttribute("aria-disabled", "false");
     }
 
-    // this.shadowRoot.innerHTML = render(this);
     this.build();
   }
 
