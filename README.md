@@ -54,3 +54,10 @@ html {
 ```
 
 These can also be applied directly on the widget, if you want it to have separate color schemes than rest of website.
+
+
+## Example usage
+
+Blockcore is hosting an pay link service that utilizes the widget, check it out here:
+
+https://pay.blockcore.com/?network=CITY&amount=100.59&address=CJsbsaQPmb65cpnpghxrz3ccz8fPC1nohE&label=Invoice%2055&message=Here%20is%20your%20invoice%20and%20we%20hope%20you%20can%20pay%20it%20as%20soon%20as%20possible.%20Thanks!&reference=55&data=23-55
