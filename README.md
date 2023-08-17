@@ -18,7 +18,6 @@ The above is the initial setup, but you need to configure network, amount, etc. 
 
 ```
     <blockcore-widget
-      color="DFAB3C"
       network="CITY"
       amount="10.5"
       address="Ccoquhaae7u6ASqQ5BiYueASz8EavUXrKn"

@@ -272,18 +272,6 @@ class BlockcoreWidget extends HTMLElement {
     }
   }
 
-  get color() {
-    return this.getAttribute("color");
-  }
-
-  set color(val) {
-    if (val) {
-      this.setAttribute("color", val);
-    } else {
-      this.removeAttribute("color");
-    }
-  }
-
   get network() {
     return this.getAttribute("network");
   }
