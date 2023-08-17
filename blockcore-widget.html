@@ -17,10 +17,11 @@
       }
 
       blockcore-widget {
-        background-color: white;
+        /* background-color: white;
         display: inline-block;
         border-radius: 5px;
         padding: 1em;
+        margin-bottom: 2em; */
       }
 
       .widget-container {
@@ -30,28 +31,36 @@
         justify-content: center; */
         height: 100%;
       }
+
+      .large-greeting::part(greeting) {
+        font-size: 64px;
+      }
+
+      html {
+        /* --background: rgb(195, 195, 195);
+        --foreground: rgb(52, 45, 45); */
+      }
     </style>
   </head>
 
   <body>
     <div class="widget-container">
-      <blockcore-widget></blockcore-widget>
+      <blockcore-widget>Is this me?</blockcore-widget>
     </div>
-
     <script>
       const widget = document.querySelector("blockcore-widget");
 
       if (widget) {
         const urlParams = new URLSearchParams(window.location.search);
 
-        widget.amount = urlParams.get("amount") ?? " ";
-        widget.color = urlParams.get("color") ?? " ";
-        widget.network = urlParams.get("network") ?? " ";
-        widget.address = urlParams.get("address") ?? " ";
-        widget.message = urlParams.get("message") ?? " ";
-        widget.label = urlParams.get("label") ?? " ";
-        widget.data = urlParams.get("data") ?? " ";
-        widget.id = urlParams.get("id") ?? " ";
+        widget.amount = urlParams.get("amount") ?? "";
+        widget.color = urlParams.get("color") ?? "";
+        widget.network = urlParams.get("network") ?? "";
+        widget.address = urlParams.get("address") ?? "";
+        widget.message = urlParams.get("message") ?? "";
+        widget.label = urlParams.get("label") ?? "";
+        widget.data = urlParams.get("data") ?? "";
+        widget.id = urlParams.get("id") ?? "";
       }
     </script>
   </body>

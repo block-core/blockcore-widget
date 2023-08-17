@@ -1,6 +1,58 @@
+// const render = (x) => `
+//   <div part="header" class="header">
+//     <h3 part="greeting">${x.network.toUpperCase()}</h3>
+//     <h4 part="message">my name is</h4>
+//   </div>
+
+//   <div>
+//     Network: <span id="network"></span>
+//   </div>
+
+//   <div part="body" class="body">
+//     <slot></slot>
+//   </div>
+
+//   <div part="footer" class="footer"></div>
+// `;
+
+const styles = new CSSStyleSheet();
+
+styles.replaceSync(`
+  :host {
+    --default-foreground: black;
+    --default-background: white;
+    --default-radius: 20px;
+    --default-depth: 15px;
+
+    display: inline-block;
+    padding: 1em;
+    contain: content;
+    color: var(--foreground, var(--default-foreground));
+    background: var(--background, var(--default-background));
+    border-radius: var(--radius, var(--default-radius));
+
+    min-width: 325px;
+    box-shadow: 0 0 var(--depth, var(--default-depth)) rgba(0,0,0,.5);
+  }
+
+  .blockcore-widget-amount {
+    color: var(--foreground, var(--default-color));;
+  }
+
+
+`);
+
 class BlockcoreWidget extends HTMLElement {
   constructor() {
     super();
+
+    this.attachShadow({ mode: "open" });
+    // this.shadowRoot.innerHTML = `HELLO WORLD <slot></slot>`;
+
+    this.shadowRoot.adoptedStyleSheets = [
+      ...this.shadowRoot.adoptedStyleSheets,
+      styles,
+    ];
   }
 
   async request(args) {
@@ -58,49 +110,11 @@ class BlockcoreWidget extends HTMLElement {
   #payButtonElement;
   #paymentLink;
 
-  render() {
-    if (!this.#styleElement) {
-      this.#styleElement = document.createElement("style");
-      this.appendChild(this.#styleElement);
-    }
-
-    this.#styleElement.innerHTML = `.blockcore-widget-pay-button {
-      padding: 2rem;
-      margin-bottom: 0.4em; 
-      margin-top: 0.4em; 
-      font-size: 1.2em; 
-      border-radius: 5px; 
-      border: 0; 
-      padding: 1em; 
-      background-color:  ${this.color};
-      cursor: pointer;
-   }
-
-   .blockcore-widget-pay-button:hover {
-      opacity: 0.8;
-   }
-   
-   .blockcore-widget-label {
-      font-size: 1.4em;
-      font-weight: 700;
-   }
-
-   .blockcore-widget-message {
-    margin-top: 0.6em;
-    margin-bottom: 0.6em;
-    }
-   
-   .blockcore-widget-amount {
-      font-size: 1.6em;
-      font-weight: 700;
-      margin-top: 0.4em;
-      margin-bottom: 0.4em;
-   }`;
-
+  build() {
     if (!this.#labelElement) {
       this.#labelElement = document.createElement("div");
       this.#labelElement.className = "blockcore-widget-label";
-      this.appendChild(this.#labelElement);
+      this.shadowRoot.appendChild(this.#labelElement);
     }
 
     this.#labelElement.innerText = this.label;
@@ -108,35 +122,35 @@ class BlockcoreWidget extends HTMLElement {
     if (!this.#messageElement) {
       this.#messageElement = document.createElement("div");
       this.#messageElement.className = "blockcore-widget-message";
-      this.appendChild(this.#messageElement);
+      this.shadowRoot.appendChild(this.#messageElement);
     }
 
     this.#messageElement.innerText = this.message;
 
     if (!this.#networkElement) {
       this.#networkElement = document.createElement("div");
-      this.appendChild(this.#networkElement);
+      this.shadowRoot.appendChild(this.#networkElement);
     }
 
     this.#networkElement.innerText = `Network: ${this.network}`;
 
     if (!this.#addressElement) {
       this.#addressElement = document.createElement("div");
-      this.appendChild(this.#addressElement);
+      this.shadowRoot.appendChild(this.#addressElement);
     }
 
     this.#addressElement.innerText = `Receiver: ${this.address}`;
 
     if (!this.#idElement) {
       this.#idElement = document.createElement("div");
-      this.appendChild(this.#idElement);
+      this.shadowRoot.appendChild(this.#idElement);
     }
 
     this.#idElement.innerText = `Reference number: #${this.id}`;
 
     if (!this.#dataElement) {
       this.#dataElement = document.createElement("div");
-      this.appendChild(this.#dataElement);
+      this.shadowRoot.appendChild(this.#dataElement);
     }
 
     this.#dataElement.innerText = `Data (blockchain): ${this.data}`;
@@ -144,12 +158,12 @@ class BlockcoreWidget extends HTMLElement {
     if (!this.#amountElement) {
       this.#amountElement = document.createElement("div");
       this.#amountElement.className = "blockcore-widget-amount";
-      this.appendChild(this.#amountElement);
+      this.shadowRoot.appendChild(this.#amountElement);
     }
 
     if (!this.#amountElement) {
       this.#amountElement = document.createElement("div");
-      this.appendChild(this.#amountElement);
+      this.shadowRoot.appendChild(this.#amountElement);
     }
 
     this.#amountElement.innerText = `Amount: ${this.amount}`;
@@ -168,14 +182,14 @@ class BlockcoreWidget extends HTMLElement {
         this.openPayment();
       });
 
-      this.appendChild(this.#payButtonElement);
+      this.shadowRoot.appendChild(this.#payButtonElement);
     }
 
     if (!this.#paymentLink) {
       this.#paymentLink = document.createElement("div");
       this.#paymentLink.innerHTML =
         'Payment securely processed using <a href="https://www.blockcore.net/wallet" target="_blank">Blockcore Wallet extension</a>.';
-      this.appendChild(this.#paymentLink);
+      this.shadowRoot.appendChild(this.#paymentLink);
     }
   }
 
@@ -314,7 +328,7 @@ class BlockcoreWidget extends HTMLElement {
   }
 
   connectedCallback() {
-    this.render();
+    this.build();
   }
 
   disconnectedCallback() {}
@@ -329,8 +343,11 @@ class BlockcoreWidget extends HTMLElement {
       this.setAttribute("aria-disabled", "false");
     }
 
-    this.render();
+    // this.shadowRoot.innerHTML = render(this);
+    this.build();
   }
+
+  update() {}
 }
 
 customElements.define("blockcore-widget", BlockcoreWidget);
